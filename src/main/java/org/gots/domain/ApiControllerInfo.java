@@ -13,12 +13,12 @@ import java.util.List;
 @Setter
 public class ApiControllerInfo implements Comparable<ApiControllerInfo> {
 
-    String controllerFileName;
-    String classFileContent;
-    List<ApiMethodInfo> apiMethodInfos = new ArrayList<>();
+    private String className;
+    private String fileContent;
+    private List<ApiMethodInfo> methods = new ArrayList<>();
 
     @Override
     public int compareTo(ApiControllerInfo o) {
-        return controllerFileName.compareTo(o.controllerFileName);
+        return className.compareTo(o.className);
     }
 }

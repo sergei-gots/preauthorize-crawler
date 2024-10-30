@@ -16,12 +16,10 @@ import java.util.List;
 @NoArgsConstructor
 public class ApiMethodInfo {
 
-    String className;
-    String httpMethodName;
-    String javaMethodName;
+    String name;
     List<String> authorities;
 
     public void printLog() {
-        log.info("Method '{} {}'. Authorities:  {}", httpMethodName, javaMethodName, authorities);
+        log.info("Method '{}'. Authorities:  {}", name, authorities);
     }
 }

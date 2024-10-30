@@ -10,7 +10,6 @@ import org.gots.domain.ApiMethodInfo;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Slf4j
@@ -21,12 +20,10 @@ public class ApiPreauthorizeXlsxWorkbookCreator {
 
     private Workbook workbook;
 
-    public Workbook constructReport() {
+    public Workbook constructReport(LocalDateTime timeStamp) {
         workbook = new XSSFWorkbook();
         CreationHelper creationHelper = workbook.getCreationHelper();
         Sheet sheet = workbook.createSheet("Информация о правах доступа для методов API Controller-ов");
-        LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-        String nowText = now.toString().replace(':', '-');
 
         int rowNumber = 0;
 
@@ -37,7 +34,7 @@ public class ApiPreauthorizeXlsxWorkbookCreator {
 
         row = sheet.createRow(rowNumber++);
         cell = row.createCell(0);
-        cell.setCellValue("По состоянию на " + now);
+        cell.setCellValue("По состоянию на " + timeStamp);
 
         row = sheet.createRow(rowNumber++);
 
@@ -53,14 +50,16 @@ public class ApiPreauthorizeXlsxWorkbookCreator {
             sheet.autoSizeColumn(columnNumber++);
         }
         for (ApiControllerInfo apiControllerInfo : apiPreauthorizeInfo.controllerInfos) {
-            for (ApiMethodInfo methodInfo : apiControllerInfo.getApiMethodInfos()) {
+            String className = apiControllerInfo.getClassName();
+            String classPath =  className + '/';
+            for (ApiMethodInfo methodInfo : apiControllerInfo.getMethods()) {
                 row = sheet.createRow(rowNumber++);
                 columnNumber = 0;
-                row.createCell(columnNumber++).setCellValue(methodInfo.getClassName());
-                String javaMethodName = methodInfo.getJavaMethodName();
+                row.createCell(columnNumber++).setCellValue(className);
+                String methodName = methodInfo.getName();
                 cell = row.createCell(columnNumber++);
-                cell.setCellValue(javaMethodName);
-                cell.setHyperlink(createHyperLink(creationHelper, javaMethodName));
+                cell.setCellValue(methodName);
+                cell.setHyperlink(createHyperLink(creationHelper, classPath + methodName));
                 setHyperlinkStyle(workbook, cell);
                 List<String> methodAuthorities = methodInfo.getAuthorities();
                 for (String authority : apiPreauthorizeInfo.getFoundAuthorities()) {

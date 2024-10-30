@@ -13,11 +13,13 @@ import org.gots.apputil.CommandLineArguments;
 @Getter
 public class ApiPreauthorizeCrawlerCommandLineArguments implements CommandLineArguments {
 
-    public static final String PROJECT_DIR_ARGUMENT_KEY = "projectdir";
-    public static final String OUTPUT_DIR_ARGUMENT_KEY = "outputdir";
-    public static final String SWAGGER_HOST_ARGUMENT_KEY = "swaggerhost";
+    public static final String PROJECT_DIR_ARGUMENT_KEY = "project-dir";
+    public static final String REST_CONTROLLER_MASK_KEY = "rest-controller-mask";
+    public static final String OUTPUT_DIR_ARGUMENT_KEY = "output-dir";
+    public static final String SWAGGER_HOST_ARGUMENT_KEY = "swagger-host";
 
     private static final String PROJECT_DIR_DEFAULT_VALUE = ".";
+    private static final String REST_CONTROLLER_MASK_DEFAULT_VALUE = "RestController";
     private static final String OUTPUT_DIR_DEFAULT_VALUE = "scratches";
     private static final String SWAGGER_HOST_DEFAULT_VALUE = "http://localhost:8080/webapp/swagger-ui/index.html?configUrl=/webapp/v3/api-docs/swagger-config#/";
 
@@ -27,6 +29,7 @@ public class ApiPreauthorizeCrawlerCommandLineArguments implements CommandLineAr
     private final Map<String, String> arguments = new HashMap<>();
     {
         arguments.put(PROJECT_DIR_ARGUMENT_KEY, PROJECT_DIR_DEFAULT_VALUE);
+        arguments.put(REST_CONTROLLER_MASK_KEY, REST_CONTROLLER_MASK_DEFAULT_VALUE);
         arguments.put(OUTPUT_DIR_ARGUMENT_KEY, OUTPUT_DIR_DEFAULT_VALUE);
         arguments.put(SWAGGER_HOST_ARGUMENT_KEY, SWAGGER_HOST_DEFAULT_VALUE);
     }

@@ -16,11 +16,8 @@ import java.time.temporal.ChronoUnit;
 @Slf4j
 public class ApiPreauthorizeCrawlerApp implements AppAbleToShowHelp {
 
-    private final LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
     ApiPreauthorizeCrawlerCommandLineArguments apiPreauthorizeCrawlerCommandLineArguments = new ApiPreauthorizeCrawlerCommandLineArguments();
-
-    private final ApiPreauthorizeInfo apiPreauthorizeInfo = new ApiPreauthorizeInfo();
 
     @Override
     public String getHelp() {
@@ -47,13 +44,18 @@ public class ApiPreauthorizeCrawlerApp implements AppAbleToShowHelp {
     private ApiPreauthorizeCrawlerApp(String[] args) throws IOException {
         log.info("@Preathorize-info-crawler Gots S.");
 
-        CommandLineParser.parseArgs(apiPreauthorizeCrawlerCommandLineArguments, args, this);
         ApiPreauthorizeCrawler apiPreauthorizeCrawler = new ApiPreauthorizeCrawler();
+        ApiPreauthorizeInfo apiPreauthorizeInfo = new ApiPreauthorizeInfo();
+
+        CommandLineParser.parseArgs(apiPreauthorizeCrawlerCommandLineArguments, args, this);
         apiPreauthorizeCrawler.process(apiPreauthorizeCrawlerCommandLineArguments,
                 apiPreauthorizeInfo);
         ApiPreauthorizeXlsxWorkbookCreator apiAuthoritiesXlsxWorkbookCreator = new ApiPreauthorizeXlsxWorkbookCreator(apiPreauthorizeInfo);
         ApiPreauthorizeXlsxFileWriter apiPreauthorizeXlsxFileWriter = new ApiPreauthorizeXlsxFileWriter();
-        apiPreauthorizeXlsxFileWriter.writeReport(apiAuthoritiesXlsxWorkbookCreator.constructReport(), now, apiPreauthorizeCrawlerCommandLineArguments);
+
+        LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        apiPreauthorizeXlsxFileWriter.writeReport(apiAuthoritiesXlsxWorkbookCreator.constructReport(now), now, apiPreauthorizeCrawlerCommandLineArguments);
         apiAuthoritiesXlsxWorkbookCreator.close();
+
     }
 }

@@ -47,9 +47,12 @@ public class ApiPreauthorizeCrawler {
 
     private ApiPreauthorizeInfo apiPreauthorizeInfo;
 
+    private String restControllerMask;
+
 
     public void process(CommandLineArguments commandLineArguments, ApiPreauthorizeInfo apiPreauthorizeInfo) throws IOException{
         this.apiPreauthorizeInfo = apiPreauthorizeInfo;
+        this.restControllerMask = commandLineArguments.getArgumentValue(ApiPreauthorizeCrawlerCommandLineArguments.REST_CONTROLLER_MASK_KEY);
         apiPreauthorizeInfo.setBaseSwaggerUrl(commandLineArguments.getArgumentValue(ApiPreauthorizeCrawlerCommandLineArguments.SWAGGER_HOST_ARGUMENT_KEY));
 
         File projectDir = new File(commandLineArguments.getArgumentValue(ApiPreauthorizeCrawlerCommandLineArguments.PROJECT_DIR_ARGUMENT_KEY)).getAbsoluteFile();
@@ -70,27 +73,19 @@ public class ApiPreauthorizeCrawler {
 
     private void processAllMethods() {
         for (ApiControllerInfo apiControllerInfo : apiPreauthorizeInfo.getControllerInfos()) {
-            log.trace("Processing the file {}", apiControllerInfo.getControllerFileName());
-
-            String classFileContent = apiControllerInfo.getClassFileContent();
-
-            Matcher classNameMatcher = classNamePattern.matcher(classFileContent);
-            if (!classNameMatcher.find()) {
-                return;
-            };
-            String className = classNameMatcher.group(1);
+            String className = apiControllerInfo.getClassName();
+            String classFileContent = apiControllerInfo.getFileContent();
 
             log.info("Processing the controller {}", className);
+
             Matcher methodDeclarationMatcher = methodDeclarationPattern.matcher(classFileContent);
 
-            List<ApiMethodInfo> methodInfos = apiControllerInfo.getApiMethodInfos();
+            List<ApiMethodInfo> methodInfos = apiControllerInfo.getMethods();
 
             while (methodDeclarationMatcher.find()) {
                 String methodFullName = methodDeclarationMatcher.group(0);
                 ApiMethodInfo apiMethodInfo = new ApiMethodInfo();
-                apiMethodInfo.setClassName(className);
-                apiMethodInfo.setHttpMethodName(methodDeclarationMatcher.group(2).toUpperCase());
-                apiMethodInfo.setJavaMethodName(extractJavaMethodName(methodFullName));
+                apiMethodInfo.setName(extractJavaMethodName(methodFullName));
                 apiMethodInfo.setAuthorities(extractAuthorities(methodFullName));
                 apiMethodInfo.printLog();
                 methodInfos.add(apiMethodInfo);
@@ -130,7 +125,7 @@ public class ApiPreauthorizeCrawler {
 
 
     private void readJavaFiles(File directory) throws IOException{
-        log.trace("Crawling throught the directory '{}'", directory);
+        log.trace("Crawling throughout the directory '{}'", directory);
         File[] files = directory.listFiles();
 
         if (files != null) {
@@ -153,10 +148,25 @@ public class ApiPreauthorizeCrawler {
         if (!restControllerMatcher.find()) {
             return;
         }
+
+        Matcher classNameMatcher = classNamePattern.matcher(fileContent);
+        if (!classNameMatcher.find()) {
+            return;
+        }
+
         log.info("Presumably a controller class found in the file '{}'", filePath);
+
+
+        String className = classNameMatcher.group(1);
+        int restControllerMaskIndex = className.indexOf(this.restControllerMask);
+        if (restControllerMaskIndex > 1) {
+            className = className.substring(0, restControllerMaskIndex);
+        }
+        className = className.toLowerCase();
+
         ApiControllerInfo apiControllerInfo = new ApiControllerInfo();
-        apiControllerInfo.setClassFileContent(fileContent);
-        apiControllerInfo.setControllerFileName(filePath.toString());
+        apiControllerInfo.setClassName(className);
+        apiControllerInfo.setFileContent(fileContent);
         apiPreauthorizeInfo.getControllerInfos().add(apiControllerInfo);
         log.info("File '{}' successfully read ", filePath);
     }
