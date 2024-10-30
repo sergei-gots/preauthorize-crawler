@@ -6,17 +6,18 @@ This tool collects and lists all @PreAuthorize authorities used in @RestControll
 
 <h2>Usage</h2>:
 <code>
+  
   Options:
                     
-                      --project-dir=<path>   Set the project's directory (by default = '.')
-                      --output-dir=<path>    Set the output directory (by default = 'scratches')
-                      --rest-controller-mask=<RestController>  Root part in names of RestController-classes (by default = 'RestController')
-                      --swagger-host=<url>   Set the Swagger host URL (by default = 'http://localhost:8080/webapp/swagger-ui/index.html?configUrl=/webapp/v3/api-docs/swagger-config#/'"
-                      --help                Show this help message
+    --project-dir=<path>   Set the project's directory (by default = '.')
+    --output-dir=<path>    Set the output directory (by default = 'scratches')
+    --rest-controller-mask=<RestController>  Root part in names of RestController-classes (by default = 'RestController')
+    --swagger-host=<url>   Set the Swagger host URL (by default = 'http://localhost:8080/webapp/swagger-ui/index.html?configUrl=/webapp/v3/api-docs/swagger-config#/'"
+    --help                Show this help message
                     
-                    Usage example:
-                     java preauthorize-crawler-1.0-all.jar --project-dir=./../my-webapp --output-dir=my-scratches --swaggerhost=http://dev.mycrosoft.com:80A0/webapp/swagger-ui/index.html?configrl=/webapp/v3/api-docs/swagger-config#/
+  Usage example:
+    java preauthorize-crawler-1.0-all.jar --project-dir=./../my-webapp --output-dir=my-scratches --swaggerhost=http://dev.mycrosoft.com:80A0/webapp/swagger-ui/index.html?configrl=/webapp/v3/api-docs/swagger-config#/
                     
-                      Thank you for using this @Preauthorize-crawler
-                      Best wishes, Sergei:)
+    Thank you for using this @Preauthorize-crawler
+    
 </code>
