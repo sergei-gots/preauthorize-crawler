@@ -33,25 +33,23 @@ public class ApiPreauthorizeXlsxFileWriter {
 
         try (FileOutputStream fileOut = new FileOutputStream(file)) {
             workbook.write(fileOut);
-            log.info("Файл успешно сохранён: {}", file.getAbsolutePath());
+            log.info("File successfully saved: {}", file.getAbsolutePath());
         } catch (IOException e) {
-            log.error("Ошибка при записи файла: {}", e.getMessage());
+            log.error("Failure during file writing occurred: {}", e.getMessage());
         }
     }
 
-    private Path checkOutputPath(String outputPath) {
+    private void checkOutputPath(String outputPath) {
         Path currentDirPath = Paths.get("").toAbsolutePath();
         Path fullOutputPath = currentDirPath.resolve(outputPath);
 
         if (Files.exists(fullOutputPath)) {
-            return fullOutputPath;
+            return;
         }
         try {
             Files.createDirectories(fullOutputPath);
-            return currentDirPath;
         } catch (IOException e) {
-            log.error("Ошибка при создании каталога '{}': {}", fullOutputPath, e.getMessage());
-            return null;
+            log.error("Failure during directory '{}' creation: {}", fullOutputPath, e.getMessage());
         }
     }
 }

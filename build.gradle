@@ -8,13 +8,13 @@ group = 'org.gots'
 version = '1.0-SNAPSHOT'
 
 application {
-    mainClassName = 'org.gots.Main'
+    mainClassName = 'org.gots.app.ApiPreauthorizeCrawlerApp'
 }
 
 jar {
     manifest {
         attributes(
-                'Main-Class': 'org.gots.Main'
+                'Main-Class': 'org.gots.app.ApiPreauthorizeCrawlerApp'
         )
     }
 }

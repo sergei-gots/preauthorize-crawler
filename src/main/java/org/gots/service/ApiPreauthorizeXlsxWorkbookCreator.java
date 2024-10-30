@@ -78,9 +78,9 @@ public class ApiPreauthorizeXlsxWorkbookCreator {
     public void close() {
         try {
             workbook.close();
-            log.info("Workbook Excel успешно закрыт");
+            log.info("Workbook Excel successfully closed");
         } catch (IOException e) {
-            log.error("Ошибка при закрытии workbook Excel: {}", e.getMessage());
+            log.error("Failure during close Excel workbook occurred: {}", e.getMessage());
         }
     }
 

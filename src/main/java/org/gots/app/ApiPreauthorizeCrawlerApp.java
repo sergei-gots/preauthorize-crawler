@@ -30,7 +30,7 @@ public class ApiPreauthorizeCrawlerApp implements AppAbleToShowHelp {
                       --help                Show this help message
                     
                     Usage example:
-                     java preauthorize-crawler-1.0-all.jar --project-dir=./../my-webapp --output-dir=my-scratches --swaggerhost=http://dev.mycrosoft.com:80A0/webapp/swagger-ui/index.html?configrl=/webapp/v3/api-docs/swagger-config#/
+                     java -jar preauthorize-crawler-1.0-all.jar --project-dir=./../my-webapp --output-dir=my-scratches --swaggerhost=http://dev.mycrosoft.com:80A0/webapp/swagger-ui/index.html?configrl=/webapp/v3/api-docs/swagger-config#/
                     
                       Thank you for using this @Preauthorize-crawler
                       Best wishes, Sergei:)
