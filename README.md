@@ -16,7 +16,7 @@ This tool collects and lists all @PreAuthorize authorities used in @RestControll
     --help                Show this help message
                     
   Usage example:
-    java preauthorize-crawler-1.0-all.jar --project-dir=./../my-webapp --output-dir=my-scratches --swaggerhost=http://dev.mycrosoft.com:80A0/webapp/swagger-ui/index.html?configrl=/webapp/v3/api-docs/swagger-config#/
+    java <b>-jar</b> preauthorize-crawler-1.0-all.jar --project-dir=./../my-webapp --output-dir=my-scratches --swaggerhost=http://dev.mycrosoft.com:80A0/webapp/swagger-ui/index.html?configrl=/webapp/v3/api-docs/swagger-config#/
                     
     Thank you for using this @Preauthorize-crawler
     
