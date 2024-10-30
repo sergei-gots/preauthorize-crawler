@@ -23,7 +23,8 @@ public class ApiPreauthorizeCrawlerApp implements AppAbleToShowHelp {
         return """
                       Usage:
                       --projectdir=<path>   Set the project's directory (by default = '.')
-                      --outputdir=<path>    Set the output directory (by default = 'scratches)
+                      --outputdir=<path>    Set the output directory (by default = 'scratches')
+                      --rest-controller-mask=<RestControlller>  Root part in names of RestController-classes (by default = 'RestController')
                       --swaggerhost=<url>   Set the Swagger host URL (by default = 'http://localhost:8080/webapp/swagger-ui/index.html?configUrl=/webapp/v3/api-docs/swagger-config#/'" +
                       --help                Show this help message
                       Thank you for using this @Preauthorize-crawler
