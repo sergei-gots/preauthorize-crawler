@@ -16,7 +16,6 @@ import java.time.temporal.ChronoUnit;
 @Slf4j
 public class ApiPreauthorizeCrawlerApp implements AppAbleToShowHelp {
 
-
     ApiPreauthorizeCrawlerCommandLineArguments apiPreauthorizeCrawlerCommandLineArguments = new ApiPreauthorizeCrawlerCommandLineArguments();
 
     @Override
