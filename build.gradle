@@ -1,0 +1,64 @@
+ plugins {
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '8.1.1' // Добавьте этот плагин
+}
+
+
+group = 'org.gots'
+version = '1.0-SNAPSHOT'
+
+application {
+    mainClassName = 'org.gots.Main'
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'org.gots.Main'
+        )
+    }
+}
+
+shadowJar {
+    archiveBaseName.set('preauthorize-crawler')
+    archiveVersion.set('1.0')
+    archiveClassifier.set('all')
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    compileOnly 'org.projectlombok:lombok:1.18.26'
+    annotationProcessor 'org.projectlombok:lombok:1.18.26'
+
+    implementation 'org.jetbrains:annotations:24.0.1'
+
+    // SLF4J
+    implementation 'org.slf4j:slf4j-api:2.0.9'
+
+    // Реализация логгера Logback
+    implementation 'ch.qos.logback:logback-classic:1.4.11'
+
+    //Xls
+    implementation group: 'org.apache.poi', name: 'poi', version: '5.0.0'
+    implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.0.0'
+
+}
+
+test {
+    useJUnitPlatform()
+}
