@@ -12,6 +12,12 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static java.awt.Font.BOLD;
+import static java.awt.Font.PLAIN;
+import static org.apache.poi.ss.usermodel.BorderStyle.THIN;
+import static org.apache.poi.ss.usermodel.HorizontalAlignment.CENTER;
+import static org.apache.poi.ss.usermodel.HorizontalAlignment.LEFT;
+
 @Slf4j
 @RequiredArgsConstructor
 public class ApiPreauthorizeXlsxWorkbookCreator {
@@ -21,51 +27,80 @@ public class ApiPreauthorizeXlsxWorkbookCreator {
     private Workbook workbook;
 
     public Workbook constructReport(LocalDateTime timeStamp) {
+
         workbook = new XSSFWorkbook();
+
+        final CellStyle sheetHeaderCellStyle = createCellStyle(IndexedColors.WHITE, BOLD, LEFT);
+        final CellStyle tableHeaderCellStyle = createCellStyle(IndexedColors.WHITE1);
+        final CellStyle authorityCellStyle = createCellStyle(IndexedColors.TAN);
+        final CellStyle noAuthorityCellStyle = createCellStyle(IndexedColors.LIGHT_GREEN);
+
         CreationHelper creationHelper = workbook.getCreationHelper();
-        Sheet sheet = workbook.createSheet("Информация о правах доступа для методов API Controller-ов");
+        Sheet sheet = workbook.createSheet("API Methods Authorities Info");
 
         int rowNumber = 0;
 
         Row row = sheet.createRow(rowNumber++);
         Cell cell = row.createCell(0);
-        cell.setCellValue("Информация о правах доступа для методов API Controller-ов");
+        cell.setCellValue("API Methods Authorities Info");
+        cell.setCellStyle(sheetHeaderCellStyle);
 
 
-        row = sheet.createRow(rowNumber++);
-        cell = row.createCell(0);
-        cell.setCellValue("По состоянию на " + timeStamp);
+        cell = row.createCell(1);
+        cell.setCellValue("at " + timeStamp);
+        cell.setCellStyle(sheetHeaderCellStyle);
 
         row = sheet.createRow(rowNumber++);
 
         int columnNumber = 0;
         cell = row.createCell(columnNumber++);
-        cell.setCellValue("Контролллер");
+        cell.setCellValue("Controller");
+        cell.setCellStyle(tableHeaderCellStyle);
 
         cell = row.createCell(columnNumber++);
-        cell.setCellValue("Метод");
+        cell.setCellValue("Method");
+        cell.setCellStyle(tableHeaderCellStyle);
+
         for (String authority : apiPreauthorizeInfo.getFoundAuthorities()) {
+
             cell = row.createCell(columnNumber);
             cell.setCellValue(authority);
+            cell.setCellStyle(tableHeaderCellStyle);
+
             sheet.autoSizeColumn(columnNumber++);
+
         }
+
         for (ApiControllerInfo apiControllerInfo : apiPreauthorizeInfo.controllerInfos) {
+
             String className = apiControllerInfo.getClassName();
             String classPath =  className + '/';
+
             for (ApiMethodInfo methodInfo : apiControllerInfo.getMethods()) {
+
                 row = sheet.createRow(rowNumber++);
                 columnNumber = 0;
                 row.createCell(columnNumber++).setCellValue(className);
-                String methodName = methodInfo.getName();
+                String methodName = methodInfo.getMethodName();
                 cell = row.createCell(columnNumber++);
                 cell.setCellValue(methodName);
                 cell.setHyperlink(createHyperLink(creationHelper, classPath + methodName));
                 setHyperlinkStyle(workbook, cell);
                 List<String> methodAuthorities = methodInfo.getAuthorities();
+
                 for (String authority : apiPreauthorizeInfo.getFoundAuthorities()) {
+
                     cell = row.createCell(columnNumber++);
-                    cell.setCellValue(methodAuthorities.contains(authority) ? authority : "-");
+                    if (methodAuthorities.contains(authority)) {
+                        cell.setCellValue(authority);
+                        cell.setCellStyle(authorityCellStyle);
+                    } else {
+                        cell.setCellValue("-");
+                        cell.setCellStyle(noAuthorityCellStyle);
+                    }
+
                 }
+
             }
         }
 
@@ -97,5 +132,34 @@ public class ApiPreauthorizeXlsxWorkbookCreator {
         Hyperlink hyperlink = creationHelper.createHyperlink(HyperlinkType.URL);
         hyperlink.setAddress(apiPreauthorizeInfo.getBaseSwaggerUrl() + methodName);
         return hyperlink;
+    }
+
+    private CellStyle createCellStyle(IndexedColors backgroundColour) {
+        return createCellStyle(backgroundColour, PLAIN, CENTER);
+    }
+
+    private CellStyle createCellStyle(IndexedColors backgroundColour, int fontStyle, HorizontalAlignment horizontalAlignment) {
+
+        CellStyle style = workbook.createCellStyle();
+
+        style.setBorderBottom(THIN);
+        style.setBorderTop(THIN);
+        style.setBorderLeft(THIN);
+        style.setBorderRight(THIN);
+
+        style.setAlignment(horizontalAlignment);
+        style.setVerticalAlignment(VerticalAlignment.CENTER);
+
+        Font font = workbook.createFont();
+        font.setBold(fontStyle == BOLD);
+        style.setFont(font);
+
+        if (backgroundColour != IndexedColors.AUTOMATIC) {
+            style.setFillForegroundColor(backgroundColour.getIndex());
+            style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        }
+
+        return style;
+
     }
 }

@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 public class ApiPreauthorizeCrawler {
 
     Pattern restControllerPattern = Pattern.compile(
-            "@RestController"
+            "@RestController\\s"
     );
 
     Pattern classNamePattern = Pattern.compile(
@@ -28,8 +28,8 @@ public class ApiPreauthorizeCrawler {
             Pattern.DOTALL
     );
 
-    Pattern methodDeclarationPattern = Pattern.compile(
-            "(@([a-zA-Z]{3,6})Mapping).*?return",
+    Pattern methodFullDeclarationPattern = Pattern.compile(
+            "(@([a-zA-Z])+).*?[^@]return",
             Pattern.DOTALL
     );
 
@@ -74,18 +74,23 @@ public class ApiPreauthorizeCrawler {
     private void processAllMethods() {
         for (ApiControllerInfo apiControllerInfo : apiPreauthorizeInfo.getControllerInfos()) {
             String className = apiControllerInfo.getClassName();
-            String classFileContent = apiControllerInfo.getFileContent();
+            String fileContent = apiControllerInfo.getFileContent();
 
             log.info("Processing the controller {}", className);
 
-            Matcher methodDeclarationMatcher = methodDeclarationPattern.matcher(classFileContent);
+            Matcher methodMatcher = methodFullDeclarationPattern.matcher(fileContent);
 
             List<ApiMethodInfo> methodInfos = apiControllerInfo.getMethods();
 
-            while (methodDeclarationMatcher.find()) {
-                String methodFullName = methodDeclarationMatcher.group(0);
+            while (methodMatcher.find()) {
+
+                String mapping = methodMatcher.group(1);
+                if (mapping.equals("RequestMapping")) {
+                    continue;
+                }
+                String methodFullName = methodMatcher.group(0);
                 ApiMethodInfo apiMethodInfo = new ApiMethodInfo();
-                apiMethodInfo.setName(extractJavaMethodName(methodFullName));
+                apiMethodInfo.setMethodName(extractJavaMethodName(methodFullName));
                 apiMethodInfo.setAuthorities(extractAuthorities(methodFullName));
                 apiMethodInfo.printLog();
                 methodInfos.add(apiMethodInfo);
@@ -154,7 +159,7 @@ public class ApiPreauthorizeCrawler {
             return;
         }
 
-        log.info("Presumably a controller class found in the file '{}'", filePath);
+        log.info("Presumably controller class found in the file '{}'", filePath);
 
 
         String className = classNameMatcher.group(1);
@@ -162,7 +167,6 @@ public class ApiPreauthorizeCrawler {
         if (restControllerMaskIndex > 1) {
             className = className.substring(0, restControllerMaskIndex);
         }
-        className = className.toLowerCase();
 
         ApiControllerInfo apiControllerInfo = new ApiControllerInfo();
         apiControllerInfo.setClassName(className);

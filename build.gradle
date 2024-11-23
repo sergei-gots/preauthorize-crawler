@@ -21,7 +21,7 @@ jar {
 
 shadowJar {
     archiveBaseName.set('preauthorize-crawler')
-    archiveVersion.set('1.0')
+    archiveVersion.set('1.0.1')
     archiveClassifier.set('all')
 }
 
